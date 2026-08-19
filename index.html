@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="12Budget — спокойный и понятный семейный бюджет.">
+  <title>12Budget — семейный бюджет без лишнего</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fc; --surface: #ffffff; --ink: #172235; --muted: #66728a;
+      --line: #e4e8f1; --brand: #5a67e8; --brand-dark: #444fd0; --soft: #eef0ff;
+      --shadow: 0 20px 60px rgba(43, 55, 95, .12);
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #101425; --surface: #191f34; --ink: #f3f5ff; --muted: #aab4cb;
+      --line: #2b3550; --brand: #8e98ff; --brand-dark: #aab1ff; --soft: #242b50;
+      --shadow: 0 20px 60px rgba(0, 0, 0, .28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; transition: background .2s, color .2s; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 40px)); margin: auto; }
+    header { padding: 22px 0; }
+    nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.04em; font-size: 1.25rem; }
+    .mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--brand); color: white; font-size: 1rem; }
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .control { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 8px 10px; cursor: pointer; font: inherit; }
+    .control:hover { border-color: var(--brand); }
+    .lang.active { background: var(--soft); border-color: var(--brand); color: var(--brand-dark); font-weight: 700; }
+    .hero { padding: 84px 0 72px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 60px; align-items: center; }
+    .eyebrow { color: var(--brand-dark); font-weight: 750; letter-spacing: .06em; text-transform: uppercase; font-size: .78rem; }
+    h1 { font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.02; letter-spacing: -.065em; margin: 14px 0 22px; max-width: 650px; }
+    .lead { font-size: 1.14rem; color: var(--muted); max-width: 530px; margin: 0; }
+    .actions { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .button { display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; padding: 13px 19px; font-weight: 750; transition: transform .15s, background .15s; }
+    .button:hover { transform: translateY(-2px); }
+    .primary { color: white; background: var(--brand); box-shadow: 0 8px 24px rgba(90, 103, 232, .25); }
+    .secondary { border: 1px solid var(--line); background: var(--surface); }
+    .phone { width: min(330px, 100%); margin: auto; padding: 12px; border: 8px solid #20283d; border-radius: 38px; background: #fff; box-shadow: var(--shadow); color: #1d2740; }
+    .screen { padding: 20px; min-height: 470px; border-radius: 23px; background: linear-gradient(145deg, #f5f6ff, #eef1fb); }
+    .screen-top { display: flex; align-items: center; justify-content: space-between; color: #65708e; font-size: .8rem; }
+    .balance { margin: 36px 0 24px; font-size: 2.05rem; font-weight: 800; letter-spacing: -.05em; }
+    .card { padding: 17px; border-radius: 17px; background: #5a67e8; color: white; box-shadow: 0 10px 20px rgba(90,103,232,.2); }
+    .card small { opacity: .76; } .card strong { display: block; font-size: 1.22rem; margin-top: 5px; }
+    .mini-list { margin-top: 18px; display: grid; gap: 10px; }
+    .mini { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border-radius: 13px; font-size: .88rem; }
+    .mini span:first-child { color: #66728a; } .minus { color: #db5967; font-weight: 700; }
+    section { padding: 86px 0; }
+    .section-title { max-width: 590px; margin-bottom: 36px; } h2 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -.045em; margin: 9px 0 12px; } .section-title p { color: var(--muted); margin: 0; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .feature { padding: 26px; border: 1px solid var(--line); border-radius: 19px; background: var(--surface); }
+    .icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: var(--soft); font-size: 1.15rem; }
+    h3 { margin: 17px 0 8px; font-size: 1.08rem; } .feature p { margin: 0; color: var(--muted); }
+    .cta { margin: 0 0 70px; padding: 48px; border-radius: 25px; background: var(--brand); color: white; text-align: center; } .cta h2 { margin: 0; max-width: 630px; margin-inline: auto; } .cta p { opacity: .84; margin: 14px auto 24px; max-width: 540px; } .cta .button { background: white; color: #424cc9; }
+    footer { padding: 28px 0 42px; color: var(--muted); font-size: .9rem; } .footer-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; } footer a:hover { color: var(--brand); }
+    @media (max-width: 780px) { .hero { grid-template-columns: 1fr; padding-top: 52px; gap: 38px; } .hero .phone { max-width: 290px; } .features { grid-template-columns: 1fr; } section { padding: 64px 0; } .cta { padding: 36px 22px; } }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <nav>
+      <a class="brand" href="#"><span class="mark">₿</span>12Budget</a>
+      <div class="controls">
+        <button class="control lang active" data-lang="ru" type="button">RU</button>
+        <button class="control lang" data-lang="en" type="button">EN</button>
+        <button id="theme-toggle" class="control" type="button" aria-label="Переключить тему">☾</button>
+      </div>
+    </nav>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">Ваши деньги — под контролем</div>
+        <h1 data-i18n="title">Семейный бюджет, в котором легко разобраться</h1>
+        <p class="lead" data-i18n="lead">12Budget помогает видеть полную картину расходов, планировать цели и спокойно принимать решения о деньгах.</p>
+        <div class="actions">
+          <a class="button primary" href="#start" data-i18n="cta">Начать бесплатно</a>
+          <a class="button secondary" href="#features" data-i18n="featuresLink">Возможности</a>
+        </div>
+      </div>
+      <div class="phone" aria-label="12Budget app preview">
+        <div class="screen">
+          <div class="screen-top"><span data-i18n="month">Август</span><span>•••</span></div>
+          <div class="balance">₸ 248 500</div>
+          <div class="card"><small data-i18n="available">Доступно в этом месяце</small><strong>₸ 86 240</strong></div>
+          <div class="mini-list">
+            <div class="mini"><span data-i18n="food">Продукты</span><b class="minus">− ₸ 12 400</b></div>
+            <div class="mini"><span data-i18n="home">Дом</span><b class="minus">− ₸ 8 900</b></div>
+            <div class="mini"><span data-i18n="savings">Накопления</span><b>₸ 20 000</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="features">
+      <div class="section-title">
+        <div class="eyebrow" data-i18n="simple">Просто и понятно</div>
+        <h2 data-i18n="featuresTitle">Всё нужное для уверенного планирования</h2>
+        <p data-i18n="featuresLead">Без сложных таблиц и лишних экранов — только ясные цифры и привычные действия.</p>
+      </div>
+      <div class="features">
+        <article class="feature"><div class="icon">◎</div><h3 data-i18n="f1title">Все деньги в одном месте</h3><p data-i18n="f1text">Счета, наличные и цели собраны в понятной общей картине.</p></article>
+        <article class="feature"><div class="icon">↗</div><h3 data-i18n="f2title">Расходы без догадок</h3><p data-i18n="f2text">Следите за категориями и сразу замечайте, куда уходит бюджет.</p></article>
+        <article class="feature"><div class="icon">✦</div><h3 data-i18n="f3title">Цели, которые становятся ближе</h3><p data-i18n="f3text">Откладывайте на важное и наблюдайте за прогрессом каждый день.</p></article>
+      </div>
+    </section>
+    <section id="start" class="cta">
+      <h2 data-i18n="ctaTitle">Наведите порядок в финансах — без давления</h2>
+      <p data-i18n="ctaText">Начните с одной записи. Остальное 12Budget поможет разложить по местам.</p>
+      <a class="button" href="mailto:hello@12budget.app" data-i18n="ctaButton">Связаться с нами</a>
+    </section>
+  </main>
+  <footer class="container"><div class="footer-row"><span>© 2026 12Budget</span><a href="delete-account.html" data-i18n="delete">Удаление аккаунта</a></div></footer>
+  <script>
+    const copy = {
+      ru: { eyebrow:'Ваши деньги — под контролем', title:'Семейный бюджет, в котором легко разобраться', lead:'12Budget помогает видеть полную картину расходов, планировать цели и спокойно принимать решения о деньгах.', cta:'Начать бесплатно', featuresLink:'Возможности', month:'Август', available:'Доступно в этом месяце', food:'Продукты', home:'Дом', savings:'Накопления', simple:'Просто и понятно', featuresTitle:'Всё нужное для уверенного планирования', featuresLead:'Без сложных таблиц и лишних экранов — только ясные цифры и привычные действия.', f1title:'Все деньги в одном месте', f1text:'Счета, наличные и цели собраны в понятной общей картине.', f2title:'Расходы без догадок', f2text:'Следите за категориями и сразу замечайте, куда уходит бюджет.', f3title:'Цели, которые становятся ближе', f3text:'Откладывайте на важное и наблюдайте за прогрессом каждый день.', ctaTitle:'Наведите порядок в финансах — без давления', ctaText:'Начните с одной записи. Остальное 12Budget поможет разложить по местам.', ctaButton:'Связаться с нами', delete:'Удаление аккаунта' },
+      en: { eyebrow:'Your money, clearly organized', title:'A family budget that is easy to understand', lead:'12Budget gives you a complete view of spending, helps you plan goals, and makes money decisions feel calm and clear.', cta:'Get started free', featuresLink:'Features', month:'August', available:'Available this month', food:'Groceries', home:'Home', savings:'Savings', simple:'Simple by design', featuresTitle:'Everything you need to plan with confidence', featuresLead:'No complex spreadsheets or cluttered screens — just clear numbers and familiar actions.', f1title:'All your money in one place', f1text:'Accounts, cash, and goals come together in one clear overview.', f2title:'Know where your money goes', f2text:'Track categories and spot spending patterns as they happen.', f3title:'Goals within reach', f3text:'Save for what matters and watch your progress grow day by day.', ctaTitle:'Bring calm to your finances', ctaText:'Start with one entry. 12Budget will help put the rest in place.', ctaButton:'Contact us', delete:'Delete account' }
+    };
+    const setLanguage = (lang) => {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach((node) => { node.textContent = copy[lang][node.dataset.i18n]; });
+      document.querySelectorAll('.lang').forEach((button) => button.classList.toggle('active', button.dataset.lang === lang));
+      localStorage.setItem('12budget-lang', lang);
+    };
+    const setTheme = (theme) => {
+      document.documentElement.dataset.theme = theme;
+      document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀' : '☾';
+      document.getElementById('theme-toggle').setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+      localStorage.setItem('12budget-theme', theme);
+    };
+    document.querySelectorAll('.lang').forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.lang)));
+    document.getElementById('theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+    setLanguage(localStorage.getItem('12budget-lang') || 'ru');
+    setTheme(localStorage.getItem('12budget-theme') || 'light');
+  </script>
+</body>
+</html>
