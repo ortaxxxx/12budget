@@ -88,7 +88,8 @@
 
       document.getElementById('sign-in-form').addEventListener('submit', async (event) => {
         event.preventDefault();
-        const button = event.currentTarget.querySelector('button');
+        const form = event.currentTarget;
+        const button = form.querySelector('button');
         button.disabled = true;
         setStatus('sign-in-status', 'Signing in…');
         try {
@@ -104,7 +105,7 @@
           if (!response.ok || !result.access_token) throw new Error(result.error_description || 'Sign-in failed. Check your email address and password.');
           accessToken = result.access_token;
           document.getElementById('password').value = '';
-          event.currentTarget.classList.add('hidden');
+          form.classList.add('hidden');
           document.getElementById('delete-form').classList.remove('hidden');
         } catch (error) {
           setStatus('sign-in-status', error.message || 'Sign-in failed.', true);
