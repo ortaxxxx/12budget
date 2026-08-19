@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>12Budget — Account and Data Deletion</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: #071c31;
+        color: #eef5fb;
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      main { width: min(720px, calc(100% - 40px)); margin: 0 auto; padding: 56px 0 72px; }
+      .brand { color: #76bdf1; font-weight: 700; font-size: 1.05rem; letter-spacing: .02em; }
+      h1 { font-size: clamp(2rem, 7vw, 3rem); line-height: 1.12; margin: 12px 0 16px; }
+      h2 { margin: 40px 0 10px; font-size: 1.3rem; }
+      p, li { color: #c9d8e5; }
+      .notice { margin-top: 28px; padding: 18px 20px; border-radius: 14px; background: #0e2d4a; border: 1px solid #2d6090; }
+      strong { color: #fff; }
+      form { margin-top: 22px; padding: 24px; border-radius: 16px; background: #0e2d4a; border: 1px solid #2d6090; }
+      label { display: block; margin: 14px 0 6px; color: #eef5fb; font-weight: 600; }
+      input { width: 100%; padding: 12px; border: 1px solid #527795; border-radius: 9px; background: #061625; color: #fff; font: inherit; }
+      button { margin-top: 20px; padding: 12px 16px; border: 0; border-radius: 9px; background: #d95757; color: #fff; cursor: pointer; font: inherit; font-weight: 700; }
+      button:disabled { opacity: .6; cursor: wait; }
+      .status { min-height: 1.6em; margin: 14px 0 0; color: #c9d8e5; }
+      .error { color: #ffaaa4; }
+      .hidden { display: none; }
+      footer { margin-top: 48px; color: #92aac0; font-size: .9rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand">12Budget</div>
+      <h1>Account and data deletion</h1>
+      <p>You can permanently delete your 12Budget account and the data connected to it here, without reinstalling the app.</p>
+
+      <h2>Delete your account</h2>
+      <p>Sign in with the email address and password you use for 12Budget. Your password is used only to verify your identity and is not stored on this page.</p>
+      <form id="sign-in-form">
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="email" required />
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+        <button type="submit">Continue</button>
+        <p class="status" id="sign-in-status" aria-live="polite"></p>
+      </form>
+
+      <form id="delete-form" class="hidden">
+        <strong>Confirm permanent deletion</strong>
+        <p>All cloud data listed below will be deleted immediately. This cannot be undone.</p>
+        <button type="submit">Permanently delete my account</button>
+        <p class="status" id="delete-status" aria-live="polite"></p>
+      </form>
+
+      <div class="notice"><strong>This action is permanent and cannot be undone.</strong></div>
+
+      <h2>Data that is deleted</h2>
+      <p>When deletion is confirmed, 12Budget permanently deletes the account and all associated cloud data, including:</p>
+      <ul>
+        <li>account identifier and email address;</li>
+        <li>accounts, balances, currencies, and savings goals;</li>
+        <li>categories and budgets;</li>
+        <li>income, expense, and transfer records, including dates, amounts, and optional comments;</li>
+        <li>cloud synchronization metadata.</li>
+      </ul>
+
+      <h2>Retention period</h2>
+      <p>12Budget does not retain your account or cloud budgeting data after successful deletion. Deletion is initiated immediately after confirmation. Data stored locally on the device used for deletion is also removed.</p>
+
+      <h2>Data on other devices</h2>
+      <p>If the same account was used on another device, data stored locally on that device may remain until the app detects that the account has been deleted. Opening the app while connected to the internet signs that device out and clears its local account data.</p>
+
+      <footer>Last updated: August 19, 2026 · 12Budget</footer>
+    </main>
+    <script>
+      const supabaseUrl = 'https://adljphlfxgsrteolfxcc.supabase.co';
+      const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkbGpwaGxmeGdzcnRlb2xmeGNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTUwMzIsImV4cCI6MjA5NjU3MTAzMn0.FN6cKacqQr2QDLnfnfmQdyhmmmyeRwTvs9m8cIVk-yc';
+      let accessToken = null;
+
+      const setStatus = (id, message, isError = false) => {
+        const element = document.getElementById(id);
+        element.textContent = message;
+        element.classList.toggle('error', isError);
+      };
+
+      document.getElementById('sign-in-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector('button');
+        button.disabled = true;
+        setStatus('sign-in-status', 'Signing in…');
+        try {
+          const response = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: { apikey: anonKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: document.getElementById('email').value.trim(),
+              password: document.getElementById('password').value,
+            }),
+          });
+          const result = await response.json();
+          if (!response.ok || !result.access_token) throw new Error(result.error_description || 'Sign-in failed. Check your email address and password.');
+          accessToken = result.access_token;
+          document.getElementById('password').value = '';
+          event.currentTarget.classList.add('hidden');
+          document.getElementById('delete-form').classList.remove('hidden');
+        } catch (error) {
+          setStatus('sign-in-status', error.message || 'Sign-in failed.', true);
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      document.getElementById('delete-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!window.confirm('Delete your 12Budget account and all cloud data permanently?')) return;
+        const button = event.currentTarget.querySelector('button');
+        button.disabled = true;
+        setStatus('delete-status', 'Deleting your account…');
+        try {
+          const response = await fetch(`${supabaseUrl}/functions/v1/delete-account`, {
+            method: 'POST',
+            headers: { apikey: anonKey, Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+          });
+          const result = await response.json();
+          if (!response.ok || result.deleted !== true) throw new Error(result.error || 'Deletion could not be completed.');
+          accessToken = null;
+          setStatus('delete-status', 'Your account and associated cloud data have been permanently deleted.');
+          button.remove();
+        } catch (error) {
+          setStatus('delete-status', error.message || 'Deletion could not be completed.', true);
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
