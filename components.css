@@ -1,0 +1,14 @@
+[data-site-header]{border-bottom:1px solid var(--line)}
+[data-site-header]>nav{width:min(1080px,calc(100% - 40px));min-height:72px;margin:auto;display:flex;align-items:center;gap:24px}
+footer:not([data-shared-footer]){display:none}
+@media(max-width:640px){[data-site-header]>nav{width:calc(100% - 28px);min-height:auto;padding:14px 0;gap:12px;flex-wrap:wrap}}
+
+/* Keep navigation centered between the logo and the language/theme controls. */
+.header-inner{position:relative}
+.site-nav{position:absolute;left:50%;margin:0;transform:translateX(-50%)}
+.site-nav a{white-space:nowrap}
+.header-inner .controls{margin-left:auto}
+[data-site-header]>nav{position:relative}
+[data-site-header]>nav .page-links{position:absolute;left:50%;margin:0;transform:translateX(-50%)}
+[data-site-header]>nav .controls{margin-left:auto}
+@media(max-width:640px){.site-nav{position:static;justify-content:center;transform:none}.header-inner .controls{margin-left:0}[data-site-header]>nav .page-links{position:static;transform:none;margin-left:auto}}

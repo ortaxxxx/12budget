@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>12Budget — Account deletion</title>
     <link rel="stylesheet" href="site.css">
+    <link rel="stylesheet" href="components.css">
 </head>
 
-<body>
-    <header class="site-header">
+<body data-page="deletion">
+    <div data-site-header>
         <div class="header-inner"><a class="brand" href="./"><img class="brand-logo" src="assets/app_icon_512.png" alt="12Budget">12Budget</a>
             <nav class="site-nav"><a href="./" data-i18n="home">Home</a><a href="delete-account.html"
                     aria-current="page" data-i18n="deletion">Delete account</a><a href="contact.html"
@@ -20,7 +21,7 @@
                 </select><button class="control" data-theme-toggle type="button" aria-label="Use dark theme">◐</button>
             </div>
         </div>
-    </header>
+    </div>
     <main>
         <div class="eyebrow">Account settings</div>
         <h1>Account and data deletion</h1>
@@ -54,8 +55,47 @@
         <p>12Budget does not retain your account or cloud budgeting data after successful deletion. Deletion is
             initiated immediately after confirmation.</p>
     </main>
+    <div data-site-footer></div>
     <footer><div class="footer-row"><span>© 2026 12Budget</span><span><a href="contact.html" data-i18n="contact">Contact</a> · <a href="delete-account.html" data-i18n="deletion">Delete account</a></span></div></footer>
+    <script src="components.js"></script>
     <script src="site.js"></script>
+    <script>
+        (() => {
+            const copy = {
+                en: {
+                    eyebrow: 'Account settings', title: 'Account and data deletion', lead: 'Permanently delete your 12Budget account and the data connected to it, without reinstalling the app.', deleteTitle: 'Delete your account', signIn: 'Sign in with the email address and password you use for 12Budget. Your password is used only to verify your identity and is not stored on this page.', email: 'Email address', password: 'Password', continue: 'Continue', confirm: 'Confirm permanent deletion', confirmText: 'All cloud data listed below will be deleted immediately. This cannot be undone.', delete: 'Permanently delete my account', warning: 'This action is permanent and cannot be undone.', dataTitle: 'Data that is deleted', dataLead: 'When deletion is confirmed, 12Budget permanently deletes the account and all associated cloud data, including:', retentionTitle: 'Retention period', retention: '12Budget does not retain your account or cloud budgeting data after successful deletion. Deletion is initiated immediately after confirmation.', items: ['account identifier and email address;', 'accounts, balances, currencies, and savings goals;', 'categories and budgets;', 'income, expense, and transfer records;', 'cloud synchronization metadata.']
+                },
+                ru: {
+                    eyebrow: 'Настройки аккаунта', title: 'Удаление аккаунта и данных', lead: 'Безвозвратно удалите аккаунт 12Budget и связанные с ним данные без переустановки приложения.', deleteTitle: 'Удалить аккаунт', signIn: 'Войдите с помощью электронной почты и пароля, которые используются в 12Budget. Пароль применяется только для подтверждения личности и не сохраняется на этой странице.', email: 'Электронная почта', password: 'Пароль', continue: 'Продолжить', confirm: 'Подтвердите безвозвратное удаление', confirmText: 'Все перечисленные ниже облачные данные будут удалены сразу. Это действие нельзя отменить.', delete: 'Удалить мой аккаунт навсегда', warning: 'Это действие нельзя отменить.', dataTitle: 'Какие данные будут удалены', dataLead: 'После подтверждения 12Budget безвозвратно удалит аккаунт и все связанные облачные данные, включая:', retentionTitle: 'Срок хранения', retention: 'После успешного удаления 12Budget не хранит данные аккаунта и облачные данные бюджета. Удаление запускается сразу после подтверждения.', items: ['идентификатор аккаунта и адрес электронной почты;', 'счета, балансы, валюты и цели накоплений;', 'категории и бюджеты;', 'записи о доходах, расходах и переводах;', 'метаданные облачной синхронизации.']
+                }
+            };
+            const applyDeletionLanguage = (lang) => {
+                const t = copy[lang] || copy.en;
+                const main = document.querySelector('main');
+                main.querySelector('.eyebrow').textContent = t.eyebrow;
+                main.querySelector('h1').textContent = t.title;
+                main.querySelector('.lead').textContent = t.lead;
+                const headings = main.querySelectorAll('h2');
+                headings[0].textContent = t.deleteTitle; headings[1].textContent = t.dataTitle; headings[2].textContent = t.retentionTitle;
+                const signInForm = document.getElementById('sign-in-form');
+                signInForm.querySelectorAll('label')[0].textContent = t.email;
+                signInForm.querySelectorAll('label')[1].textContent = t.password;
+                signInForm.querySelector('button').textContent = t.continue;
+                signInForm.previousElementSibling.textContent = t.signIn;
+                const deleteForm = document.getElementById('delete-form');
+                deleteForm.querySelector('strong').textContent = t.confirm;
+                deleteForm.querySelector('p').textContent = t.confirmText;
+                deleteForm.querySelector('button').textContent = t.delete;
+                main.querySelector('.notice strong').textContent = t.warning;
+                headings[1].nextElementSibling.textContent = t.dataLead;
+                main.querySelectorAll('li').forEach((item, i) => { item.textContent = t.items[i]; });
+                headings[2].nextElementSibling.textContent = t.retention;
+            };
+            const current = localStorage.getItem('twelvebudget-language') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
+            applyDeletionLanguage(current);
+            document.querySelector('[data-language]')?.addEventListener('change', (event) => applyDeletionLanguage(event.target.value));
+        })();
+    </script>
     <script>const url = 'https://adljphlfxgsrteolfxcc.supabase.co', key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkbGpwaGxmeGdzcnRlb2xmeGNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTUwMzIsImV4cCI6MjA5NjU3MTAzMn0.FN6cKacqQr2QDLnfnfmQdyhmmmyeRwTvs9m8cIVk-yc'; let token = null; const status = (id, m, e = false) => { const x = document.getElementById(id); x.textContent = m; x.classList.toggle('error', e) }; document.getElementById('sign-in-form').addEventListener('submit', async e => { e.preventDefault(); const b = e.currentTarget.querySelector('button'); b.disabled = true; status('sign-in-status', 'Signing in…'); try { const r = await fetch(`${url}/auth/v1/token?grant_type=password`, { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.value.trim(), password: password.value }) }), d = await r.json(); if (!r.ok || !d.access_token) throw Error(); token = d.access_token; password.value = ''; e.currentTarget.classList.add('hidden'); document.getElementById('delete-form').classList.remove('hidden') } catch (_) { status('sign-in-status', 'Sign-in failed. Check your email address and password.', true) } finally { b.disabled = false } }); document.getElementById('delete-form').addEventListener('submit', async e => { e.preventDefault(); if (!confirm('Delete your 12Budget account and all cloud data permanently?')) return; const b = e.currentTarget.querySelector('button'); b.disabled = true; status('delete-status', 'Deleting your account…'); try { const r = await fetch(`${url}/functions/v1/delete-account`, { method: 'POST', headers: { apikey: key, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }), d = await r.json(); if (!r.ok || !d.deleted) throw Error(); status('delete-status', 'Your account and associated cloud data have been permanently deleted.'); b.remove() } catch (_) { status('delete-status', 'Deletion could not be completed.', true); b.disabled = false } })</script>
 </body>
 
