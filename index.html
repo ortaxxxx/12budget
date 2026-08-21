@@ -27,7 +27,7 @@
     nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.04em; font-size: 1.25rem; }
     .mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--brand); color: white; font-size: 1rem; }
-    .controls { display: flex; align-items: center; gap: 8px; }
+    .controls { display: flex; align-items: center; gap: 8px; } .page-links { display:flex; gap:18px; margin-left:auto; color:var(--muted); font-weight:650; font-size:.94rem; } .page-links a:hover { color:var(--brand); } .brand-logo { width:34px; height:34px; border-radius:10px; object-fit:cover; }
     .control { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 8px 10px; cursor: pointer; font: inherit; }
     .control:hover { border-color: var(--brand); }
     .lang.active { background: var(--soft); border-color: var(--brand); color: var(--brand-dark); font-weight: 700; }
@@ -63,13 +63,9 @@
 <body>
   <header class="container">
     <nav>
-      <a class="brand" href="#"><span class="mark">₿</span>12Budget</a>
-      <div class="controls">
-        <button class="control lang active" data-lang="ru" type="button">RU</button>
-        <button class="control lang" data-lang="en" type="button">EN</button>
-        <button id="theme-toggle" class="control" type="button" aria-label="Переключить тему">☾</button>
-      </div>
-    </nav>
+      <a class="brand" href="./"><img class="brand-logo" src="assets/app_icon_512.png" alt="12Budget">12Budget</a>
+      <div class="page-links"><a href="contact.html" data-i18n="contact">Связаться</a><a href="delete-account.html" data-i18n="delete">Удаление аккаунта</a></div>
+      <div class="controls"><select id="language-select" class="control" aria-label="Language"><option value="ru">RU</option><option value="en">EN</option></select><button id="theme-toggle" class="control" type="button" aria-label="Переключить тему">◒</button></div></nav>
   </header>
   <main class="container">
     <section class="hero">
@@ -122,16 +118,16 @@
     const setLanguage = (lang) => {
       document.documentElement.lang = lang;
       document.querySelectorAll('[data-i18n]').forEach((node) => { node.textContent = copy[lang][node.dataset.i18n]; });
-      document.querySelectorAll('.lang').forEach((button) => button.classList.toggle('active', button.dataset.lang === lang));
+      document.getElementById('language-select').value = lang;
       localStorage.setItem('12budget-lang', lang);
     };
     const setTheme = (theme) => {
       document.documentElement.dataset.theme = theme;
-      document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀' : '☾';
+      document.getElementById('theme-toggle').textContent = theme === 'dark' ? '☀' : '◒';
       document.getElementById('theme-toggle').setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
       localStorage.setItem('12budget-theme', theme);
     };
-    document.querySelectorAll('.lang').forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.lang)));
+    document.getElementById('language-select').addEventListener('change', (event) => setLanguage(event.target.value));
     document.getElementById('theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
     setLanguage(localStorage.getItem('12budget-lang') || 'ru');
     setTheme(localStorage.getItem('12budget-theme') || 'light');
