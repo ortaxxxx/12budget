@@ -10,7 +10,7 @@
 
 <body>
     <header class="site-header">
-        <div class="header-inner"><a class="brand" href="./"><span class="brand-mark">12</span>Budget</a>
+        <div class="header-inner"><a class="brand" href="./"><img class="brand-logo" src="assets/app_icon_512.png" alt="12Budget">12Budget</a>
             <nav class="site-nav"><a href="./" data-i18n="home">Home</a><a href="delete-account.html"
                     data-i18n="deletion">Delete account</a><a href="contact.html" aria-current="page"
                     data-i18n="contact">Contact</a></nav>
@@ -36,7 +36,7 @@
             <p class="status" id="contact-status" aria-live="polite"></p>
         </form>
     </main>
-    <footer data-i18n="lastUpdated">Last updated: August 20, 2026 · 12Budget</footer>
+    <footer><div class="footer-row"><span>© 2026 12Budget</span><span><a href="contact.html" data-i18n="contact">Contact</a> · <a href="delete-account.html" data-i18n="deletion">Delete account</a></span></div></footer>
     <script src="site.js"></script>
     <script>const url = 'https://adljphlfxgsrteolfxcc.supabase.co', key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkbGpwaGxmeGdzcnRlb2xmeGNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5OTUwMzIsImV4cCI6MjA5NjU3MTAzMn0.FN6cKacqQr2QDLnfnfmQdyhmmmyeRwTvs9m8cIVk-yc'; document.getElementById('contact-form').addEventListener('submit', async e => { e.preventDefault(); const f = e.currentTarget, b = f.querySelector('button'), s = document.getElementById('contact-status'), t = translations[document.documentElement.lang]; b.disabled = true; s.textContent = t.sending; s.classList.remove('error'); try { const v = Object.fromEntries(new FormData(f)), r = await fetch(`${url}/functions/v1/contact-form`, { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: JSON.stringify(v) }); if (!r.ok) throw Error(); f.reset(); s.textContent = t.sent } catch (_) { s.textContent = t.sendFailed; s.classList.add('error') } finally { b.disabled = false } })</script>
 </body>
